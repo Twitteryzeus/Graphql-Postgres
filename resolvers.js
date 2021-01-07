@@ -32,7 +32,10 @@ const resolvers = {
     async allusers(root, args, { models }, info) {
       try {
         const users = await models.User.findAll({
-          include: models.Events,
+          include: {
+            model: models.Events,
+            as: "events",
+          },
         });
 
         if (!users) {
@@ -46,8 +49,14 @@ const resolvers = {
     },
     async allevents(root, args, { models }, info) {
       try {
-        const events = await models.Events.findAll();
-
+        const events = await models.Events.findAll({
+          include: [
+            {
+              model: models.User,
+              as: "events",
+            },
+          ],
+        });
         if (!events) {
           throw new Error("No Events Found");
         }
@@ -66,13 +75,34 @@ const resolvers = {
       });
       return user;
     },
-    async createEvents(root, { name, invites, userId }, { models }, info) {
+    async createEvents(root, { name, userId }, { models }, info) {
       const events = await models.Events.create({
         name,
-        invites,
         userId,
       });
       return events;
+    },
+    async createEventsInvites(root, { invites, id }, { models }, info) {
+      try {
+        const events = await models.Events.update(
+          {
+            invites,
+          },
+          {
+            where: {
+              id: id,
+            },
+          }
+        );
+
+        if (!events) {
+          throw new Error("Oops something went wrong");
+        }
+
+        return events;
+      } catch (error) {
+        console.log("Error", error);
+      }
     },
   },
 };

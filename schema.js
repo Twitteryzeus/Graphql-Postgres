@@ -24,7 +24,8 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(email: String!, password: String!): User!
-    createEvents(name: String!, userId: Int!): Events
+    createEvents(name: String!, userId: Int!): Events!
+    createEventsInvites(invites: [String!]!, id: Int!): [Int]!
   }
 `;
 
