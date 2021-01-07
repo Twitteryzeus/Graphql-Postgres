@@ -49,18 +49,12 @@ const resolvers = {
     },
     async allevents(root, args, { models }, info) {
       try {
-        const events = await models.Events.findAll({
-          include: [
-            {
-              model: models.User,
-              as: "events",
-            },
-          ],
-        });
+        const events = await models.Events.findAll();
         if (!events) {
           throw new Error("No Events Found");
         }
 
+        console.log("info", info);
         return events;
       } catch (error) {
         console.log("Error", error);
