@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const events = require("./server/models/events");
+const { Op } = require("sequelize");
 
 const resolvers = {
   Query: {
@@ -49,12 +49,17 @@ const resolvers = {
     },
     async allevents(root, args, { models }, info) {
       try {
-        const events = await models.Events.findAll();
+        const events = await models.Events.findAll({
+          where: {
+            id: {
+              [Op.gt]: 2,
+            },
+          },
+        });
         if (!events) {
           throw new Error("No Events Found");
         }
 
-        console.log("info", info);
         return events;
       } catch (error) {
         console.log("Error", error);
