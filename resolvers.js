@@ -24,6 +24,14 @@ const resolvers = {
       });
       return user;
     },
+    async createEvents(root, { name, invites, userId }, { models }, info) {
+      const events = await models.Events.create({
+        name,
+        invites,
+        userId,
+      });
+      return events;
+    },
   },
 };
 
